@@ -1,0 +1,13 @@
+---
+- name: APT Update
+  hosts: apt
+  become: yes
+  tasks:
+    - name: Update cache
+      apt:
+        update_cache: yes
+    - name: Upgrade packages
+      apt:
+        upgrade: yes
+        autoremove: yes
+        autoclean: yes
