@@ -1,6 +1,6 @@
 ---
 - name: APT Update
-  hosts: apt
+  hosts: ubuntu, debian
   become: yes
   tasks:
     - name: Update cache
