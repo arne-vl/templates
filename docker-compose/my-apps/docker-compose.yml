@@ -1,0 +1,36 @@
+services:
+  chicken-price-api:
+    image: ghcr.io/arne-vl/chicken-price-api:latest
+    container_name: chicken-price-api
+
+    ports:
+      - "8000:8000"
+
+    # If you want to use local persistent storage
+    # volumes:
+    #   - ./chicken-price-data:/data
+
+    # If you want to save data into a Postgres database
+    # environment:
+    #   - DB_NAME=
+    #   - DB_USER=
+    #   - DB_PASSWORD=
+    #   - DB_HOST=
+    #   - DB_PORT=5432
+    #   - DB_ABC_TABLE=abc_price
+    #   - DB_DEINZE_TABLE=deinze_price
+
+    restart: unless-stopped
+
+  telegram-approval-bot:
+    image: ghcr.io/arne-vl/telegram-approval-bot:latest
+    container_name: telegram-approval-bot
+
+    environment:
+      - TELEGRAM_API_TOKEN=
+      - CHAT_ID=
+      - RABBITMQ_URL=
+      - RABBITMQ_APPROVAL_QUEUE=
+      - RABBITMQ_APPROVED_QUEUE=
+
+    restart: unless-stopped
