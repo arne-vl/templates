@@ -1,0 +1,26 @@
+services:
+  nginx:
+    image: jc21/nginx-proxy-manager:latest
+    container_name: nginx-proxy-manager
+
+    ports:
+      - '80:80'
+      - '81:81'
+      - '443:443'
+
+    volumes:
+      - ./nginx-data:/data
+      - ./nginx-letsencrypt:/etc/letsencrypt
+
+    environment:
+      - INITIAL_ADMIN_EMAIL=
+      - INITIAL_ADMIN_PASSWORD=
+
+    networks:
+      - nginx-proxy-manager
+
+    restart: unless-stopped
+
+networks:
+  nginx-proxy-manager:
+    external: true
