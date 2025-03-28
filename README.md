@@ -2,3 +2,4 @@
 This repository has IaC templates that I use in my Homelab. This includes:
 - ansible playbooks
 - SQL scripts
+- Docker compose files
