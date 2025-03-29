@@ -7,9 +7,6 @@ if [ "$(id -u)" -ne 0 ]; then
     exit 1
 fi
 
-echo "Paste your public SSH key and press Enter:"
-read -r SSH_KEY
-
 if id "$ANSIBLE_USER" >/dev/null 2>&1; then
     echo "User '$ANSIBLE_USER' already exists."
 else
@@ -22,6 +19,9 @@ SSH_DIR="/home/$ANSIBLE_USER/.ssh"
 mkdir -p "$SSH_DIR"
 chown "$ANSIBLE_USER:$ANSIBLE_USER" "$SSH_DIR"
 chmod 700 "$SSH_DIR"
+
+echo "Paste your public SSH key and press Enter:"
+read -r SSH_KEY
 
 echo "Setting up SSH key for '$ANSIBLE_USER'..."
 echo "$SSH_KEY" > "$SSH_DIR/authorized_keys"
