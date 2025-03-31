@@ -6,6 +6,6 @@ This script creates an "ansible" user on a Linux system, sets up SSH key authent
 
 Usage:
 ```sh
-curl -fsSL https://raw.githubusercontent.com/arne-vl/homelab-iac/refs/heads/main/shell/create_ansible_user.sh | sh
+curl -fsSL https://raw.githubusercontent.com/arne-vl/templates/refs/heads/main/shell/create_ansible_user.sh | sh
 ```
 Then paste in your public SSH key when prompted.
