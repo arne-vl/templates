@@ -1,5 +1,5 @@
-# Homelab IaC
-This repository has IaC templates that I use in my Homelab. This includes:
+# Templates
 - ansible playbooks
+- Shell scripts
 - SQL scripts
 - Docker compose files
