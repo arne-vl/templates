@@ -3,3 +3,4 @@
 - Shell scripts
 - SQL scripts
 - Docker compose files
+- Shell scrips
