@@ -6,7 +6,9 @@ This script creates an "ansible" user on a Linux system, sets up SSH key authent
 
 Usage:
 ```sh
-curl -fsSL https://raw.githubusercontent.com/arne-vl/templates/refs/heads/main/shell/create_ansible_user.sh | sh
+curl -s -O https://raw.githubusercontent.com/arne-vl/templates/refs/heads/main/shell/create_ansible_user.sh
+chmod +x create_ansible_user.sh
+sudo ./create_ansible_user.sh
 ```
 Then paste in your public SSH key when prompted.
 
@@ -15,5 +17,7 @@ This script creates a SMB share on a Linux system by creating a shared folder, c
 
 Usage:
 ```sh
-curl -fsSL https://raw.githubusercontent.com/arne-vl/templates/refs/heads/main/shell/create_smb_share.sh | sh
+curl -s -O https://raw.githubusercontent.com/arne-vl/templates/refs/heads/main/shell/create_smb_share.sh
+chmod +x create_smb_share.sh
+sudo ./create_smb_share.sh
 ```
