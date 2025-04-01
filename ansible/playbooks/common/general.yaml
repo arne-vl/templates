@@ -1,0 +1,27 @@
+---
+- name: General program installation
+  hosts: ubuntu, debian
+  become: yes
+  tasks:
+    - name: Install common packages
+      apt:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - curl
+        - wget
+        - vim
+        - htop
+        - net-tools
+
+    - name: Install atools
+      shell: |
+        if ! command -v atools &> /dev/null; then
+          curl -fsSL https://raw.githubusercontent.com/arne-vl/atools/refs/heads/main/linux_installer.sh | sh
+        else
+          LATEST_VERSION=$(curl -s https://api.github.com/repos/arne-vl/atools/releases/latest | grep tag_name | cut -d '"' -f 4 | sed 's/v//')
+          INSTALLED_VERSION=$(atools version | sed 's/atools version: //')
+          if [ "$LATEST_VERSION" != "$INSTALLED_VERSION" ]; then
+            curl -fsSL https://raw.githubusercontent.com/arne-vl/atools/refs/heads/main/linux_installer.sh | sh
+          fi
+        fi
