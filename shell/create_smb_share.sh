@@ -1,18 +1,32 @@
 #!/bin/sh
 
 # Ensure script is run as root
-if [ $EUID -ne 0 ]; then
+if [ "$(id -u)" -ne 0 ]; then
     echo "This script must be run as root." >&2
     exit 1
 fi
 
-read -p "Enter the SMB share name: " SHARE_NAME
-read -p "Enter the path for the share (default: /srv/$SHARE_NAME): " SHARE_PATH
-SHARE_PATH=${SHARE_PATH:-/srv/$SHARE_NAME}
-read -p "Enter the SMB username: " SMB_USER
-read -s -p "Enter the SMB password: " SMB_PASSWORD
+# Prompt for share details
+printf "Enter the SMB share name: "
+read SHARE_NAME
+
+printf "Enter the path for the share (default: /srv/%s): " "$SHARE_NAME"
+read SHARE_PATH
+[ -z "$SHARE_PATH" ] && SHARE_PATH="/srv/$SHARE_NAME"
+
+printf "Enter the SMB username: "
+read SMB_USER
+
+printf "Enter the SMB password: "
+stty -echo
+read SMB_PASSWORD
+stty echo
 echo
-read -s -p "Confirm the SMB password: " CONFIRM_PASSWORD
+
+printf "Confirm the SMB password: "
+stty -echo
+read CONFIRM_PASSWORD
+stty echo
 echo
 
 if [ "$SMB_PASSWORD" != "$CONFIRM_PASSWORD" ]; then
@@ -20,23 +34,36 @@ if [ "$SMB_PASSWORD" != "$CONFIRM_PASSWORD" ]; then
     exit 1
 fi
 
-if ! command -v smbd &> /dev/null; then
+# Install Samba if not installed
+if ! command -v smbd >/dev/null 2>&1; then
     echo "Installing Samba..."
-    apt update && apt install -y samba
+    apt update && apt install -y samba || {
+        echo "Failed to install Samba." >&2
+        exit 1
+    }
 fi
 
+# Create the share directory
 mkdir -p "$SHARE_PATH"
 chmod 777 "$SHARE_PATH"
 
-if ! id "$SMB_USER" &>/dev/null; then
-    useradd -M -s /sbin/nologin "$SMB_USER"
+# Create system user if not exists
+if ! id "$SMB_USER" >/dev/null 2>&1; then
+    useradd -M -s /usr/sbin/nologin "$SMB_USER"
 fi
-echo -e "$SMB_PASSWORD\n$SMB_PASSWORD" | smbpasswd -a -s "$SMB_USER"
+
+# Set SMB password
+( echo "$SMB_PASSWORD"; echo "$SMB_PASSWORD" ) | smbpasswd -a -s "$SMB_USER"
 smbpasswd -e "$SMB_USER"
 
-cp /etc/samba/smb.conf /etc/samba/smb.conf.bak
+# Backup smb.conf if not already backed up
+if [ ! -f /etc/samba/smb.conf.bak ]; then
+    cp /etc/samba/smb.conf /etc/samba/smb.conf.bak
+fi
 
-cat >> /etc/samba/smb.conf <<EOF
+# Append share configuration if not already present
+if ! grep -q "^\[$SHARE_NAME\]" /etc/samba/smb.conf; then
+    cat >> /etc/samba/smb.conf <<EOF
 
 [$SHARE_NAME]
    path = $SHARE_PATH
@@ -45,8 +72,13 @@ cat >> /etc/samba/smb.conf <<EOF
    guest ok = no
    valid users = $SMB_USER
 EOF
+else
+    echo "Share [$SHARE_NAME] already exists in smb.conf. Skipping config append."
+fi
 
-systemctl restart smbd
+# Restart Samba to apply changes
+systemctl restart smbd || service smbd restart
 
+echo
 echo "SMB share '$SHARE_NAME' created successfully at '$SHARE_PATH'."
 echo "Access it via: smb://<server-ip>/$SHARE_NAME"
