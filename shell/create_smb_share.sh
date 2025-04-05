@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # Ensure script is run as root
-if [[ $EUID -ne 0 ]]; then
+if [ $EUID -ne 0 ]; then
     echo "This script must be run as root." >&2
     exit 1
 fi
@@ -15,7 +15,7 @@ echo
 read -s -p "Confirm the SMB password: " CONFIRM_PASSWORD
 echo
 
-if [[ "$SMB_PASSWORD" != "$CONFIRM_PASSWORD" ]]; then
+if [ "$SMB_PASSWORD" != "$CONFIRM_PASSWORD" ]; then
     echo "Error: Passwords do not match!" >&2
     exit 1
 fi
