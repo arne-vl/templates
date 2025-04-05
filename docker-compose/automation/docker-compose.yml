@@ -10,7 +10,6 @@ services:
       - ./n8n-data:/home/node/.n8n
 
     environment:
-      - GENERIC_TIMEZONE=
       - TZ=
 
     restart: unless-stopped
