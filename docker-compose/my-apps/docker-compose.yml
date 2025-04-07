@@ -17,6 +17,7 @@ services:
     #   - DB_PASSWORD=
     #   - DB_HOST=
     #   - DB_PORT=5432
+    #   - DB_SCHEMA=public
     #   - DB_ABC_TABLE=abc_price
     #   - DB_DEINZE_TABLE=deinze_price
 
