@@ -2,6 +2,7 @@
 This docker stack includes:
 - postgres
 - influxdb
+- timescaledb
 
 ## Download
 ```bash
